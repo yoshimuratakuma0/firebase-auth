@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "270895395072",
+    "project_id": "auth-5600e",
+    "storage_bucket": "auth-5600e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270895395072:android:0b33b3c5978047567203e5",
+        "android_client_info": {
+          "package_name": "com.free.auth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "270895395072-pugli5qdi2spblan6gvn605lrg98nsom.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBArHGGFm0Nm1VzPZfQBQbqoGyooe7dbL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "270895395072-pugli5qdi2spblan6gvn605lrg98nsom.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
