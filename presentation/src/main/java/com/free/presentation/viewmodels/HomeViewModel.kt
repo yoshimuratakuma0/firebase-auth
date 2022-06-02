@@ -6,16 +6,15 @@ import com.free.domain.usecases.FetchCurrentUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-data class MainUiState(
-    val currentUser: User? = null,
+data class HomeUiState(
     val isLoading: Boolean = false,
-    val exception: Exception? = null
+    val exception: Exception? = null,
+    val currentUser: User? = null
 )
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val fetchCurrentUserUseCase: FetchCurrentUserUseCase
 ) : ViewModel() {
-
     suspend fun currentUser(): User? = fetchCurrentUserUseCase.execute()
 }

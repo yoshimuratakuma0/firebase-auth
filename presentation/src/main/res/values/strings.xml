@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">auth</string>
     <string name="title_login">Login</string>
+    <string name="title_home">Home</string>
+
+    <string name="sign_in">SignIn</string>
+    <string name="sign_up">SignUp</string>
 </resources>

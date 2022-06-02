@@ -10,17 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.free.domain.usecases.SignInInputParams
 import com.free.domain.usecases.SignUpInputParams
 import com.free.presentation.R
 import com.free.presentation.viewmodels.LoginViewModel
-import com.google.firebase.auth.FirebaseAuthEmailException
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.free.presentation.viewmodels.ScreenType
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    navController: NavController
+    navController: NavController,
+    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     Scaffold(
         topBar = {
@@ -36,29 +36,48 @@ fun LoginScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                val username = viewModel.username.collectAsState()
+                val uiState = viewModel.uiState.collectAsState()
+                if (uiState.value.hasLogin) {
+                    navController.navigate(ScreenRoutes.home) {
+                        navController.backQueue.removeIf { it.destination.route == ScreenRoutes.login }
+                    }
+                }
+                Text(text = stringResource(id = uiState.value.screenType.titleRes))
                 OutlinedTextField(
-                    value = username.value,
+                    value = uiState.value.username,
                     onValueChange = viewModel::setUsername,
                     singleLine = true
                 )
 
-                val password = viewModel.password.collectAsState()
                 OutlinedTextField(
-                    value = password.value,
+                    value = uiState.value.password,
                     onValueChange = viewModel::setPassword,
                     singleLine = true
                 )
 
-                val uiState = viewModel.uiState.collectAsState()
-                Button(
+                TextButton(
                     onClick = {
-                        viewModel.onSignUp(SignUpInputParams(username.value, password.value))
+                        when (uiState.value.screenType) {
+                            is ScreenType.SignIn -> {
+                                viewModel.onSignIn(
+                                    SignInInputParams(
+                                        uiState.value.username,
+                                        uiState.value.password
+                                    )
+                                )
+                            }
+                            is ScreenType.SignUp -> {
+                                viewModel.onSignUp(
+                                    SignUpInputParams(
+                                        uiState.value.username,
+                                        uiState.value.password
+                                    )
+                                )
+                            }
+                        }
                     }
                 ) {
-                    if (uiState.value.exception is FirebaseAuthInvalidCredentialsException) {
-                        val a = (uiState.value.exception as FirebaseAuthInvalidCredentialsException).message
-                    }
+                    Text(stringResource(id = uiState.value.screenType.titleRes))
                 }
             }
         }
