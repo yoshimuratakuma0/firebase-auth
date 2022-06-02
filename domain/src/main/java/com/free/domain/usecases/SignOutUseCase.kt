@@ -8,7 +8,7 @@ class SignOutUseCase @Inject constructor(
     @AuthRepositoryAnnotation
     private val repository: AuthRepository
 ) {
-    suspend fun execute() {
+    fun execute() {
         repository.signOut()
     }
 }

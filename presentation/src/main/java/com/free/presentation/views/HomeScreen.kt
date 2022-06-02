@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,6 +32,15 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                     .padding(16.dp)
             ) {
                 Text(text = "Home")
+
+                TextButton(onClick = {
+                    navController.navigate(ScreenRoutes.login) {
+                        viewModel.onSignOut()
+                        navController.backQueue.removeAll { true }
+                    }
+                }) {
+                    Text(text = stringResource(id = R.string.sign_out))
+                }
             }
         }
     )

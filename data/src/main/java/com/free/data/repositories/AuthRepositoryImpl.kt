@@ -68,7 +68,7 @@ class FirebaseAuthRepositoryImpl : AuthRepository {
         }
     }
 
-    override suspend fun signOut() {
-        TODO("Not yet implemented")
+    override fun signOut() {
+        auth.signOut()
     }
 }

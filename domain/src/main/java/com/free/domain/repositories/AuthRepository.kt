@@ -9,5 +9,5 @@ interface AuthRepository {
     suspend fun fetchCurrentUser(): User?
     suspend fun signUp(params: SignUpInputParams): Result<User>
     suspend fun signIn(params: SignInInputParams): Result<User>
-    suspend fun signOut()
+    fun signOut()
 }
