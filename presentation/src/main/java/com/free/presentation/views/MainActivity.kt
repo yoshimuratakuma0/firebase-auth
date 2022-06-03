@@ -5,8 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -14,8 +12,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.free.presentation.viewmodels.HomeViewModel
 import com.free.presentation.viewmodels.LoginViewModel
-import com.free.presentation.viewmodels.MainUiState
-import com.free.presentation.viewmodels.MainViewModel
 import com.free.presentation.views.theme.AuthTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,18 +29,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             AuthTheme {
                 val navController = rememberNavController()
-
-                val mainViewModel: MainViewModel = hiltViewModel()
-                val uiState by produceState(
-                    initialValue = MainUiState(isLoading = true)
-                ) {
-                    val currentUser = mainViewModel.currentUser()
-                    value = MainUiState(isLoading = false, currentUser = currentUser)
-                }
-
                 NavHost(
                     navController = navController,
-                    startDestination = if (uiState.currentUser == null) ScreenRoutes.login else ScreenRoutes.home
+                    startDestination = ScreenRoutes.home
                 ) {
                     composable(route = ScreenRoutes.home) {
                         val viewModel: HomeViewModel = hiltViewModel()

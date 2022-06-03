@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,8 +20,7 @@ import com.free.presentation.viewmodels.ScreenType
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    navController: NavController,
-    scaffoldState: ScaffoldState = rememberScaffoldState()
+    navController: NavController
 ) {
     Scaffold(
         topBar = {
@@ -38,10 +38,11 @@ fun LoginScreen(
             ) {
                 val uiState = viewModel.uiState.collectAsState()
                 if (uiState.value.hasLogin) {
-                    navController.navigate(ScreenRoutes.home) {
-                        navController.backQueue.removeIf { it.destination.route == ScreenRoutes.login }
+                    LaunchedEffect(Unit) {
+                        navController.popBackStack()
                     }
                 }
+
                 Text(text = stringResource(id = uiState.value.screenType.titleRes))
                 OutlinedTextField(
                     value = uiState.value.username,
@@ -55,7 +56,7 @@ fun LoginScreen(
                     singleLine = true
                 )
 
-                TextButton(
+                Button(
                     onClick = {
                         when (uiState.value.screenType) {
                             is ScreenType.SignIn -> {
@@ -78,6 +79,12 @@ fun LoginScreen(
                     }
                 ) {
                     Text(stringResource(id = uiState.value.screenType.titleRes))
+                }
+
+                TextButton(onClick = {
+                    viewModel.onChangeScreenType()
+                }) {
+                    Text(stringResource(id = uiState.value.changeButtonType.titleRes))
                 }
             }
         }

@@ -20,6 +20,11 @@ sealed class ScreenType(val titleRes: Int) {
     object SignUp : ScreenType(R.string.sign_up)
 }
 
+sealed class ChangeButtonType(val titleRes: Int) {
+    object ToSignIn : ChangeButtonType(R.string.change_to_sign_in)
+    object ToSignUp : ChangeButtonType(R.string.change_to_sign_up)
+}
+
 data class LoginUiState(
     val isLoading: Boolean = false,
     val hasLogin: Boolean = false,
@@ -27,7 +32,8 @@ data class LoginUiState(
     val username: String = "",
     val password: String = "",
     val currentUser: User? = null,
-    val screenType: ScreenType = ScreenType.SignUp
+    val screenType: ScreenType = ScreenType.SignUp,
+    val changeButtonType: ChangeButtonType = ChangeButtonType.ToSignIn
 )
 
 @HiltViewModel
@@ -45,6 +51,23 @@ class LoginViewModel @Inject constructor(
 
     fun setPassword(password: String) {
         _uiState.value = uiState.value.copy(password = password)
+    }
+
+    fun onChangeScreenType() {
+        when (uiState.value.screenType) {
+            is ScreenType.SignUp -> {
+                _uiState.value = uiState.value.copy(
+                    screenType = ScreenType.SignIn,
+                    changeButtonType = ChangeButtonType.ToSignUp
+                )
+            }
+            is ScreenType.SignIn -> {
+                _uiState.value = uiState.value.copy(
+                    screenType = ScreenType.SignUp,
+                    changeButtonType = ChangeButtonType.ToSignIn
+                )
+            }
+        }
     }
 
     fun onSignUp(inputParams: SignUpInputParams) {

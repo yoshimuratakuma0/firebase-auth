@@ -21,6 +21,9 @@ class FirebaseAuthRepositoryImpl : AuthRepository {
     }
 
     override suspend fun signUp(params: SignUpInputParams): Result<User> {
+        if (params.email.isEmpty() || params.password.isEmpty()) {
+            return Result.Error(Exception())
+        }
         return suspendCoroutine {
             auth.createUserWithEmailAndPassword(params.email, params.password)
                 .addOnCompleteListener { task ->
@@ -47,6 +50,9 @@ class FirebaseAuthRepositoryImpl : AuthRepository {
     }
 
     override suspend fun signIn(params: SignInInputParams): Result<User> {
+        if (params.email.isEmpty() || params.password.isEmpty()) {
+            return Result.Error(Exception())
+        }
         return suspendCoroutine {
             auth.signInWithEmailAndPassword(params.email, params.password)
                 .addOnCompleteListener { task ->

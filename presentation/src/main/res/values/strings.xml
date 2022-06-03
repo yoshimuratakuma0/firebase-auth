@@ -6,4 +6,7 @@
     <string name="sign_in">SignIn</string>
     <string name="sign_up">SignUp</string>
     <string name="sign_out">SignOut</string>
+
+    <string name="change_to_sign_in">Change to sign in</string>
+    <string name="change_to_sign_up">Change to sign up</string>
 </resources>
