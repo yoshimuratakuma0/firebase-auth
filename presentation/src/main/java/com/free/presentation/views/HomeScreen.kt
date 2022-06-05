@@ -51,7 +51,7 @@ fun HomeScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                Text(text = "Home")
+                Text(text = uiState.currentUser?.uid ?: "")
 
                 TextButton(onClick = {
                     navController.navigate(ScreenRoutes.signIn) {
