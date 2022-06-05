@@ -1,12 +1,13 @@
 package com.free.data.repositories
 
 import com.free.core.Result
+import com.free.core.exceptions.AuthenticationException.*
 import com.free.data.models.entity
 import com.free.domain.entities.User
 import com.free.domain.repositories.AuthRepository
 import com.free.domain.usecases.SignInInputParams
 import com.free.domain.usecases.SignUpInputParams
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlin.coroutines.resume
@@ -34,7 +35,13 @@ class FirebaseAuthRepositoryImpl : AuthRepository {
                                     auth.signOut()
                                     it.resume(Result.Success(user.entity))
                                 } else {
-                                    it.resume(Result.Error(Exception()))
+                                    emailTask.exception?.let { exception ->
+                                        val convertedException = when (exception) {
+                                            is FirebaseAuthEmailException -> AuthEmailException()
+                                            else -> UndefinedException()
+                                        }
+                                        it.resume(Result.Error(convertedException))
+                                    }
                                 }
                             }
                         } ?: run {
@@ -42,7 +49,13 @@ class FirebaseAuthRepositoryImpl : AuthRepository {
                         }
                     } else {
                         task.exception?.let { exception ->
-                            it.resume(Result.Error(exception))
+                            val convertedException = when (exception) {
+                                is FirebaseAuthWeakPasswordException -> WeakPasswordException()
+                                is FirebaseAuthUserCollisionException -> EmailAlreadyInUseException()
+                                is FirebaseAuthInvalidCredentialsException -> InvalidEmailException()
+                                else -> UndefinedException()
+                            }
+                            it.resume(Result.Error(convertedException))
                         }
                     }
                 }

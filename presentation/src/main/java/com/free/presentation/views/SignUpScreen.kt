@@ -10,9 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.free.core.exceptions.AuthenticationException.*
 import com.free.domain.usecases.SignUpInputParams
 import com.free.presentation.R
 import com.free.presentation.utils.LoadingScreen
+import com.free.presentation.utils.OkAlertDialog
 import com.free.presentation.viewmodels.SignUpViewModel
 
 @Composable
@@ -72,6 +74,19 @@ fun SignUpScreen(
             }
             if (uiState.value.isLoading)
                 LoadingScreen()
+
+            if (!uiState.value.isLoading)
+                when (uiState.value.exception) {
+                    is InvalidEmailException -> OkAlertDialog(
+                        bodyResId = R.string.error_invalid_email
+                    )
+                    is WeakPasswordException -> OkAlertDialog(
+                        bodyResId = R.string.error_weak_password
+                    )
+                    is EmailAlreadyInUseException -> OkAlertDialog(
+                        bodyResId = R.string.error_email_already_in_use
+                    )
+                }
         }
     )
 }

@@ -10,4 +10,10 @@
 
     <string name="change_to_sign_in">Change to sign in</string>
     <string name="change_to_sign_up">Change to sign up</string>
+
+    <string name="error_weak_password">Password is too weak.</string>
+    <string name="error_invalid_email">This email is bad format.</string>
+    <string name="error_email_already_in_use">This email is already in use.</string>
+
+    <string name="ok">OK</string>
 </resources>
