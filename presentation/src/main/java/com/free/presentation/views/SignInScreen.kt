@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.free.domain.usecases.SignInInputParams
 import com.free.presentation.R
+import com.free.presentation.utils.LoadingScreen
 import com.free.presentation.viewmodels.SignInViewModel
 
 @Composable
@@ -29,17 +30,17 @@ fun SignInScreen(
             )
         },
         content = {
+            val uiState = viewModel.uiState.collectAsState()
+            if (uiState.value.hasLogin) {
+                LaunchedEffect(Unit) {
+                    navController.popBackStack()
+                }
+            }
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                val uiState = viewModel.uiState.collectAsState()
-                if (uiState.value.hasLogin) {
-                    LaunchedEffect(Unit) {
-                        navController.popBackStack()
-                    }
-                }
 
                 Text(text = stringResource(id = R.string.title_sign_in))
                 OutlinedTextField(
@@ -75,6 +76,9 @@ fun SignInScreen(
                     Text(stringResource(id = R.string.change_to_sign_up))
                 }
             }
+
+            if (uiState.value.isLoading)
+                LoadingScreen()
         }
     )
 }

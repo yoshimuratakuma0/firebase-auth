@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.free.domain.usecases.SignUpInputParams
 import com.free.presentation.R
+import com.free.presentation.utils.LoadingScreen
 import com.free.presentation.viewmodels.SignUpViewModel
 
 @Composable
@@ -28,12 +29,13 @@ fun SignUpScreen(
             )
         },
         content = {
+            val uiState = viewModel.uiState.collectAsState()
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                val uiState = viewModel.uiState.collectAsState()
                 Text(text = stringResource(id = R.string.title_sign_up))
                 OutlinedTextField(
                     value = uiState.value.username,
@@ -68,6 +70,8 @@ fun SignUpScreen(
                     Text(stringResource(id = R.string.change_to_sign_in))
                 }
             }
+            if (uiState.value.isLoading)
+                LoadingScreen()
         }
     )
 }
