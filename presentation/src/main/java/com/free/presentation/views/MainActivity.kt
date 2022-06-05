@@ -11,12 +11,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.free.presentation.viewmodels.HomeViewModel
-import com.free.presentation.viewmodels.LoginViewModel
+import com.free.presentation.viewmodels.SignInViewModel
+import com.free.presentation.viewmodels.SignUpViewModel
 import com.free.presentation.views.theme.AuthTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 object ScreenRoutes {
-    const val login = "login/"
+    const val signUp = "sign_up/"
+    const val signIn = "sign_in/"
     const val home = "home/"
 }
 
@@ -37,9 +39,13 @@ class MainActivity : ComponentActivity() {
                         val viewModel: HomeViewModel = hiltViewModel()
                         HomeScreen(viewModel, navController)
                     }
-                    composable(route = ScreenRoutes.login) {
-                        val viewModel: LoginViewModel = hiltViewModel()
-                        LoginScreen(viewModel, navController)
+                    composable(route = ScreenRoutes.signUp) {
+                        val viewModel: SignUpViewModel = hiltViewModel()
+                        SignUpScreen(viewModel, navController)
+                    }
+                    composable(route = ScreenRoutes.signIn) {
+                        val viewModel: SignInViewModel = hiltViewModel()
+                        SignInScreen(viewModel, navController)
                     }
                 }
             }

@@ -33,7 +33,7 @@ fun HomeScreen(
 
     if (!uiState.isLoading && uiState.currentUser == null) {
         LaunchedEffect(Unit) {
-            navController.navigate(ScreenRoutes.login)
+            navController.navigate(ScreenRoutes.signUp)
         }
     }
 
@@ -54,9 +54,8 @@ fun HomeScreen(
                 Text(text = "Home")
 
                 TextButton(onClick = {
-                    navController.navigate(ScreenRoutes.login) {
+                    navController.navigate(ScreenRoutes.signIn) {
                         viewModel.onSignOut()
-                        navController.navigate(ScreenRoutes.login)
                     }
                 }) {
                     Text(text = stringResource(id = R.string.sign_out))

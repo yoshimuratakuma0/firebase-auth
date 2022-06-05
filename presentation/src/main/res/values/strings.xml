@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">auth</string>
-    <string name="title_login">Login</string>
+    <string name="title_sign_up">Sign up</string>
+    <string name="title_sign_in">Sign in</string>
     <string name="title_home">Home</string>
 
     <string name="sign_in">SignIn</string>

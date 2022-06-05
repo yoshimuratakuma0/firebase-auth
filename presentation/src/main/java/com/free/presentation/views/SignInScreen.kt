@@ -12,21 +12,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.free.domain.usecases.SignInInputParams
-import com.free.domain.usecases.SignUpInputParams
 import com.free.presentation.R
-import com.free.presentation.viewmodels.LoginViewModel
-import com.free.presentation.viewmodels.ScreenType
+import com.free.presentation.viewmodels.SignInViewModel
 
 @Composable
-fun LoginScreen(
-    viewModel: LoginViewModel,
+fun SignInScreen(
+    viewModel: SignInViewModel,
     navController: NavController
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.title_login))
+                    Text(text = stringResource(id = R.string.title_sign_in))
                 }
             )
         },
@@ -43,7 +41,7 @@ fun LoginScreen(
                     }
                 }
 
-                Text(text = stringResource(id = uiState.value.screenType.titleRes))
+                Text(text = stringResource(id = R.string.title_sign_in))
                 OutlinedTextField(
                     value = uiState.value.username,
                     onValueChange = viewModel::setUsername,
@@ -58,36 +56,25 @@ fun LoginScreen(
 
                 Button(
                     onClick = {
-                        when (uiState.value.screenType) {
-                            is ScreenType.SignIn -> {
-                                viewModel.onSignIn(
-                                    SignInInputParams(
-                                        uiState.value.username,
-                                        uiState.value.password
-                                    )
-                                )
-                            }
-                            is ScreenType.SignUp -> {
-                                viewModel.onSignUp(
-                                    SignUpInputParams(
-                                        uiState.value.username,
-                                        uiState.value.password
-                                    )
-                                )
-                            }
-                        }
+                        viewModel.onSignIn(
+                            SignInInputParams(
+                                uiState.value.username,
+                                uiState.value.password
+                            )
+                        )
                     }
                 ) {
-                    Text(stringResource(id = uiState.value.screenType.titleRes))
+                    Text(stringResource(id = R.string.title_sign_in))
                 }
 
                 TextButton(onClick = {
-                    viewModel.onChangeScreenType()
+                    navController.navigate(ScreenRoutes.signUp) {
+                        navController.popBackStack()
+                    }
                 }) {
-                    Text(stringResource(id = uiState.value.changeButtonType.titleRes))
+                    Text(stringResource(id = R.string.change_to_sign_up))
                 }
             }
         }
     )
 }
-
