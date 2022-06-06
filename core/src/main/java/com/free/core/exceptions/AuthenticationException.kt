@@ -10,9 +10,6 @@ sealed class AuthenticationException : Exception() {
     class WrongPasswordException : AuthenticationException()
     class UserNotFoundException : AuthenticationException()
     class UserDisabledException : AuthenticationException()
-    class TooManyRequestsException : AuthenticationException()
-    class OperationNotAllowedException : AuthenticationException()
 
-    class AuthEmailException : AuthenticationException()
     class UndefinedException : AuthenticationException()
 }

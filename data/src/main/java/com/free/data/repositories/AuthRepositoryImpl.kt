@@ -1,13 +1,14 @@
 package com.free.data.repositories
 
 import com.free.core.Result
-import com.free.core.exceptions.AuthenticationException.*
+import com.free.data.exceptions.toCoreException
 import com.free.data.models.entity
 import com.free.domain.entities.User
 import com.free.domain.repositories.AuthRepository
 import com.free.domain.usecases.SignInInputParams
 import com.free.domain.usecases.SignUpInputParams
-import com.google.firebase.auth.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlin.coroutines.resume
@@ -36,11 +37,7 @@ class FirebaseAuthRepositoryImpl : AuthRepository {
                                     it.resume(Result.Success(user.entity))
                                 } else {
                                     emailTask.exception?.let { exception ->
-                                        val convertedException = when (exception) {
-                                            is FirebaseAuthEmailException -> AuthEmailException()
-                                            else -> UndefinedException()
-                                        }
-                                        it.resume(Result.Error(convertedException))
+                                        it.resume(Result.Error(exception))
                                     }
                                 }
                             }
@@ -49,11 +46,10 @@ class FirebaseAuthRepositoryImpl : AuthRepository {
                         }
                     } else {
                         task.exception?.let { exception ->
-                            val convertedException = when (exception) {
-                                is FirebaseAuthWeakPasswordException -> WeakPasswordException()
-                                is FirebaseAuthUserCollisionException -> EmailAlreadyInUseException()
-                                is FirebaseAuthInvalidCredentialsException -> InvalidEmailException()
-                                else -> UndefinedException()
+                            val convertedException = if (exception is FirebaseAuthException) {
+                                exception.toCoreException()
+                            } else {
+                                exception
                             }
                             it.resume(Result.Error(convertedException))
                         }
@@ -80,7 +76,12 @@ class FirebaseAuthRepositoryImpl : AuthRepository {
                         }
                     } else {
                         task.exception?.let { exception ->
-                            it.resume(Result.Error(exception))
+                            val convertedException = if (exception is FirebaseAuthException) {
+                                exception.toCoreException()
+                            } else {
+                                exception
+                            }
+                            it.resume(Result.Error(convertedException))
                         }
                     }
                 }
