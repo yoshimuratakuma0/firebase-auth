@@ -6,6 +6,7 @@ import com.free.data.exceptions.coreException
 import com.free.data.models.entity
 import com.free.domain.entities.User
 import com.free.domain.repositories.AuthRepository
+import com.free.domain.usecases.ResetPasswordInputParams
 import com.free.domain.usecases.SignInInputParams
 import com.free.domain.usecases.SignUpInputParams
 import com.google.firebase.FirebaseNetworkException
@@ -93,5 +94,20 @@ class FirebaseAuthRepositoryImpl : AuthRepository {
 
     override fun signOut() {
         auth.signOut()
+    }
+
+
+    override suspend fun resetPassword(params: ResetPasswordInputParams): Result<Unit> {
+        return suspendCoroutine {
+            auth.currentUser?.updatePassword(params.password)?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    it.resume(Result.Success(data = Unit))
+                } else {
+                    task.exception?.let { exception ->
+                        it.resume(Result.Error(exception))
+                    }
+                }
+            }
+        }
     }
 }
