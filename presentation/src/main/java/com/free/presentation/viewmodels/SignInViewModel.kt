@@ -48,7 +48,8 @@ class SignInViewModel @Inject constructor(
                         _uiState.value = uiState.value.copy(
                             currentUser = result.data,
                             isLoading = false,
-                            hasLogin = true
+                            hasLogin = true,
+                            exception = null
                         )
                     }
                     is Result.Error -> {

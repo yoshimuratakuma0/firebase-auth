@@ -63,7 +63,6 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.4.0'
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-    implementation "com.google.firebase:firebase-auth-ktx:$firebase_auth_ktx_version"
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

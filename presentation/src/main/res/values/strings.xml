@@ -12,8 +12,13 @@
     <string name="change_to_sign_up">Change to sign up</string>
 
     <string name="error_weak_password">Password is too weak.</string>
-    <string name="error_invalid_email">This email is bad format.</string>
-    <string name="error_email_already_in_use">This email is already in use.</string>
+    <string name="error_invalid_email">This email address is bad format.</string>
+    <string name="error_email_already_in_use">This email address is already in use.</string>
+    <string name="sent_email">Email was sent to your Email address.</string>
+    <string name="error_user_not_found_or_wrong_password">User does\'t exist or password is wrong.</string>
+    <string name="error_email_has_not_confirmed">Please confirm your email to verify.</string>
+    <string name="error_fill_in_required_items">Please fill in all required items.</string>
+    <string name="error_network">Please check your network.</string>
 
     <string name="ok">OK</string>
 </resources>

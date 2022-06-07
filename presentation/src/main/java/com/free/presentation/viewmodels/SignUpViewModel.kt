@@ -45,7 +45,8 @@ class SignUpViewModel @Inject constructor(
                     is Result.Success -> {
                         _uiState.value = uiState.value.copy(
                             currentUser = result.data,
-                            isLoading = false
+                            isLoading = false,
+                            exception = null
                         )
                     }
                     is Result.Error -> {

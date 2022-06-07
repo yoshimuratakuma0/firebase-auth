@@ -11,9 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.free.core.exceptions.AuthenticationException.*
+import com.free.core.exceptions.NetworkException
 import com.free.domain.usecases.SignInInputParams
 import com.free.presentation.R
 import com.free.presentation.utils.LoadingScreen
+import com.free.presentation.utils.OkAlertDialog
 import com.free.presentation.viewmodels.SignInViewModel
 
 @Composable
@@ -79,6 +82,25 @@ fun SignInScreen(
 
             if (uiState.value.isLoading)
                 LoadingScreen()
+
+            if (!uiState.value.isLoading)
+                when (uiState.value.exception) {
+                    is WrongPasswordException -> OkAlertDialog(
+                        bodyResId = R.string.error_user_not_found_or_wrong_password
+                    )
+                    is UserNotFoundException -> OkAlertDialog(
+                        bodyResId = R.string.error_user_not_found_or_wrong_password
+                    )
+                    is EmailHasNotConfirmed -> {
+                        OkAlertDialog(bodyResId = R.string.error_email_has_not_confirmed)
+                    }
+                    is IllegalArgumentException -> {
+                        OkAlertDialog(bodyResId = R.string.error_fill_in_required_items)
+                    }
+                    is NetworkException -> {
+                        OkAlertDialog(bodyResId = R.string.error_network)
+                    }
+                }
         }
     )
 }

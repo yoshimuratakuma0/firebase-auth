@@ -75,17 +75,21 @@ fun SignUpScreen(
             if (uiState.value.isLoading)
                 LoadingScreen()
 
+            if (uiState.value.currentUser != null)
+                OkAlertDialog(bodyResId = R.string.sent_email)
+
             if (!uiState.value.isLoading)
                 when (uiState.value.exception) {
-                    is InvalidEmailException -> OkAlertDialog(
-                        bodyResId = R.string.error_invalid_email
+                    is WrongPasswordException -> OkAlertDialog(
+                        bodyResId = R.string.error_user_not_found_or_wrong_password
                     )
-                    is WeakPasswordException -> OkAlertDialog(
-                        bodyResId = R.string.error_weak_password
+                    is UserNotFoundException -> OkAlertDialog(
+                        bodyResId = R.string.error_user_not_found_or_wrong_password
                     )
-                    is EmailAlreadyInUseException -> OkAlertDialog(
-                        bodyResId = R.string.error_email_already_in_use
-                    )
+                    is EmailHasNotConfirmed -> {
+                        // emailが登録済みであることは秘匿する
+                        OkAlertDialog(bodyResId = R.string.sent_email)
+                    }
                 }
         }
     )

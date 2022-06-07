@@ -1,12 +1,14 @@
 package com.free.data.repositories
 
 import com.free.core.Result
-import com.free.data.exceptions.toCoreException
+import com.free.core.exceptions.AuthenticationException.EmailHasNotConfirmed
+import com.free.data.exceptions.coreException
 import com.free.data.models.entity
 import com.free.domain.entities.User
 import com.free.domain.repositories.AuthRepository
 import com.free.domain.usecases.SignInInputParams
 import com.free.domain.usecases.SignUpInputParams
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.ktx.auth
@@ -46,10 +48,10 @@ class FirebaseAuthRepositoryImpl : AuthRepository {
                         }
                     } else {
                         task.exception?.let { exception ->
-                            val convertedException = if (exception is FirebaseAuthException) {
-                                exception.toCoreException()
-                            } else {
-                                exception
+                            val convertedException = when (exception) {
+                                is FirebaseAuthException -> exception.coreException
+                                is FirebaseNetworkException -> exception.coreException
+                                else -> exception
                             }
                             it.resume(Result.Error(convertedException))
                         }
@@ -59,32 +61,33 @@ class FirebaseAuthRepositoryImpl : AuthRepository {
     }
 
     override suspend fun signIn(params: SignInInputParams): Result<User> {
-        if (params.email.isEmpty() || params.password.isEmpty()) {
-            return Result.Error(Exception())
-        }
         return suspendCoroutine {
-            auth.signInWithEmailAndPassword(params.email, params.password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        auth.currentUser?.let { user ->
-                            if (user.isEmailVerified) {
-                                it.resume(Result.Success(user.entity))
-                            } else {
-                                auth.signOut()
-                                it.resume(Result.Error(Exception()))
+            try {
+                auth.signInWithEmailAndPassword(params.email, params.password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            auth.currentUser?.let { user ->
+                                if (user.isEmailVerified) {
+                                    it.resume(Result.Success(user.entity))
+                                } else {
+                                    auth.signOut()
+                                    it.resume(Result.Error(EmailHasNotConfirmed()))
+                                }
                             }
-                        }
-                    } else {
-                        task.exception?.let { exception ->
-                            val convertedException = if (exception is FirebaseAuthException) {
-                                exception.toCoreException()
-                            } else {
-                                exception
+                        } else {
+                            task.exception?.let { exception ->
+                                val convertedException = when (exception) {
+                                    is FirebaseAuthException -> exception.coreException
+                                    is FirebaseNetworkException -> exception.coreException
+                                    else -> exception
+                                }
+                                it.resume(Result.Error(convertedException))
                             }
-                            it.resume(Result.Error(convertedException))
                         }
                     }
-                }
+            } catch (e: Exception) {
+                it.resume(Result.Error(e))
+            }
         }
     }
 
