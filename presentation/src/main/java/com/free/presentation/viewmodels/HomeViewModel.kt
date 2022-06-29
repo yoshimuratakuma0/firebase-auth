@@ -3,8 +3,9 @@ package com.free.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import com.free.domain.entities.User
 import com.free.domain.usecases.FetchCurrentUserUseCase
-import com.free.domain.usecases.SignOutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 data class HomeUiState(
@@ -15,12 +16,13 @@ data class HomeUiState(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val fetchCurrentUserUseCase: FetchCurrentUserUseCase,
-    private val signOutUseCase: SignOutUseCase
+    private val fetchCurrentUserUseCase: FetchCurrentUserUseCase
 ) : ViewModel() {
-    suspend fun currentUser(): User? = fetchCurrentUserUseCase.execute()
+    private val _uiState = MutableStateFlow(SettingsUiState())
+    val uiState = _uiState.asStateFlow()
 
-    fun onSignOut() {
-        signOutUseCase.execute()
+    suspend fun fetchCurrentUser() {
+        val user = fetchCurrentUserUseCase.execute()
+        _uiState.value = uiState.value.copy(currentUser = user, isLoading = false)
     }
 }

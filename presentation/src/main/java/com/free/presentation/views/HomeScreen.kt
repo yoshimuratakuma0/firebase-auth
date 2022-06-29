@@ -5,18 +5,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.free.presentation.R
-import com.free.presentation.viewmodels.HomeUiState
 import com.free.presentation.viewmodels.HomeViewModel
 
 @Composable
@@ -25,10 +20,10 @@ fun HomeScreen(
     navController: NavController
 ) {
     val uiState by produceState(
-        initialValue = HomeUiState(isLoading = true)
+        initialValue = viewModel.uiState.collectAsState().value.copy(isLoading = true)
     ) {
-        val currentUser = viewModel.currentUser()
-        value = HomeUiState(isLoading = false, currentUser = currentUser)
+        viewModel.fetchCurrentUser()
+        value = viewModel.uiState.value
     }
 
     if (!uiState.isLoading && uiState.currentUser == null) {
@@ -52,14 +47,6 @@ fun HomeScreen(
                     .padding(16.dp)
             ) {
                 Text(text = uiState.currentUser?.uid ?: "")
-
-                TextButton(onClick = {
-                    navController.navigate(ScreenRoutes.signIn) {
-                        viewModel.onSignOut()
-                    }
-                }) {
-                    Text(text = stringResource(id = R.string.sign_out))
-                }
             }
         }
     )
